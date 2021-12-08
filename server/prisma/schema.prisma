@@ -11,7 +11,7 @@ generator client {
 }
 
 model User {
-  id                  Int    @id @default(autoincrement())
+  id                  Int    @id
   login               String @unique
   node_id             String
   avatar_url          String
@@ -28,7 +28,7 @@ model User {
   events_url          String
   received_events_url String
   type                String
-  site_admin          String
+  site_admin          Boolean
   name                String
   company             String
   blog                String
@@ -37,10 +37,10 @@ model User {
   hireable            String
   bio                 String
   twitter_username    String
-  public_repos        String
-  public_gists        String
-  followers           String
-  following           String
+  public_repos        Int
+  public_gists        Int
+  followers           Int
+  following           Int
   created_at          String
   updated_at          String
 }
