@@ -1,16 +1,22 @@
 import { Router } from 'express'
 import { PrismaClient } from '@prisma/client'
+import { fetch_user } from '../../../services/github-api'
 
 const api = Router()
 const prisma = new PrismaClient()
 
 /** GET /api/users > Retrieve all users */
-api.get('/', async (_, response) => {
-  response.json({ data: { users: await prisma.user.findMany() } })
+api.get('/:username', async (req, response) => {
+  const { username } = req.params
+  let user = await prisma.user.findUnique({ where: { login : username } })
+  if (!user) {
+    user = await fetch_user(username)
+  }
+  response.json({ data: { user } })
 })
 
 /** POST /api/users > Create an user */
-api.post('/', async (request, response) => {
+api.post('/:username', async (request, response) => {
   try {
     const newUser = await prisma.user.create({
       data: {
@@ -25,25 +31,7 @@ api.post('/', async (request, response) => {
   }
 })
 
-/** PUT /api/users/ > modify user */
-api.put('/:id', async (request, response) => {
-  const { username } = request.body
-  const { id } = request.params
-  try {
-    await prisma.user.update({
-      where: { id: parseInt(id) },
-      data: {
-        username: username
-      }
-    })
-    return response.json({data : {message: `Username of ${id} modified`}})
-  } catch(e) {
-    console.error(`Failed modify user ${id}`)
-    return response.json({data: {message: `Failed to modify username for ${id}`}})
-  }
-})
-
-api.delete('/:id', async (request, response) => {
+api.delete('/:username', async (request, response) => {
   const { id  } = request.params
   try {
     await prisma.user.delete({

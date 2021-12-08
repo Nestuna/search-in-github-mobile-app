@@ -27,7 +27,7 @@ export default function App() {
         onPress={search}
         title="Search"
         color="#841584"
-      />
+      />²
 
       <Text>{user.username}</Text>
     </View>

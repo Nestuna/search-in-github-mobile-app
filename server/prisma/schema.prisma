@@ -1,5 +1,5 @@
 // This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
+// learn more about it in the docs String https String//pris.ly/d/prisma-schema
 
 datasource db {
   provider = "postgresql"
@@ -11,7 +11,36 @@ generator client {
 }
 
 model User {
-  id    Int    @id @default(autoincrement())
-  username String
-  email String @unique
+  id                  Int    @id @default(autoincrement())
+  login               String @unique
+  node_id             String
+  avatar_url          String
+  gravatar_id         String
+  url                 String @unique
+  html_url            String
+  followers_url       String
+  following_url       String
+  gists_url           String
+  starred_url         String
+  subscriptions_url   String
+  organizations_url   String
+  repos_url           String
+  events_url          String
+  received_events_url String
+  type                String
+  site_admin          String
+  name                String
+  company             String
+  blog                String
+  location            String
+  email               String @unique
+  hireable            String
+  bio                 String
+  twitter_username    String
+  public_repos        String
+  public_gists        String
+  followers           String
+  following           String
+  created_at          String
+  updated_at          String
 }
