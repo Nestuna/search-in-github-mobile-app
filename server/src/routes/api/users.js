@@ -12,15 +12,20 @@ api.get('/:username', async (req, response) => {
     user = await fetchUser(username)
     if (user.message) {
       response.status(404).json({})
-    }
-    for(const field in user) {
-      if(user[field] === null){
-        user[field] = ''
+    } else {
+      for(const field in user) {
+        if(user[field] === null){
+        }
+      }
+      try {
+        await prisma.user.create({data : user})
+      } catch {
+        response.status(500).json({})
       }
     }
-    await prisma.user.create({data : user})
+  } else {
+    response.json({ data: { user } })
   }
-  response.json({ data: { user } })
 })
 
 export default api

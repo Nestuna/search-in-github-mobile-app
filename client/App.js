@@ -1,5 +1,9 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, Button } from 'react-native';
+import { StyleSheet, Text, View, TextInput, Button , Image} from 'react-native';
+import * as Linking from 'expo-linking';
+
+import config from './config.json'
+
 
 export default function App() {
   const [username, setUsername] = useState('');
@@ -7,7 +11,7 @@ export default function App() {
 
   async function search() {
     try {
-      const response = await fetch(`http://localhost:4242/api/users/${username}`);
+      const response = await fetch(`${config.API_URL}/${username}`);
       const user_response = await response.json();
       if (user_response) {
         setUser(user_response.data.user);
@@ -31,10 +35,20 @@ export default function App() {
 
       return (
         <View style={styles.result_container}>
-          <Text style={styles.result_title}>{ user.login }</Text>
-          <Text style={styles.result_content}><Text style={{fontWeight: 'bold'}}>Repos':</Text> {user.public_repos}</Text>
-          <Text style={styles.result_content}><Text style={{fontWeight: 'bold'}}>Followers:</Text> {user.followers}</Text>
-          <Text style={styles.result_content}><Text style={{fontWeight: 'bold'}}>Link:</Text> {user.url}</Text>
+          <View style={styles.avatar_container}>
+            <Image
+              style={styles.avatar}
+              source={
+                {uri: user.avatar_url}
+              }
+            />
+             <Text style={styles.result_title}>{ user.login }</Text>
+          </View>
+          <Text style={styles.result_content}><Text style={styles.result_titles}>Repos':</Text> {user.public_repos}</Text>
+          <Text style={styles.result_content}><Text style={styles.result_titles}>Followers:</Text> {user.followers}</Text>
+          <Text style={styles.result_content}>
+            <Text style={[styles.result_titles, {textAlign: 'right'}]} onPress={() => Linking.openURL(user.html_url)}>Go to github page</Text>
+          </Text>
         </View>
       )
     }
@@ -46,7 +60,7 @@ export default function App() {
         <TextInput
           onChangeText={setUsername}
           value={username}
-          style={{height: '40%', width: '70%'}}
+          style={{height: '50%', width: '70%', backgroundColor: '#EEE'}}
         />
         <View style={{width: '70%'}}>
           <Button
@@ -66,12 +80,11 @@ export default function App() {
 
 const styles = StyleSheet.create({
   container: {
+    paddingTop: 50,
     flex: 1,
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
-    borderColor: 'black',
-    borderWidth: 1
   },
   text_input_container: {
     flex: 1,
@@ -79,7 +92,7 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   content_container: {
-    flex: 7,
+    flex: 6,
     width: '100%',
     alignItems: 'center'
   },
@@ -87,7 +100,10 @@ const styles = StyleSheet.create({
     padding: '5%',
     width: '90%',
     backgroundColor: '#e4eef7',
-    borderRadius: '1.5%'
+    borderRadius: 5
+  },
+  result_titles: {
+    fontWeight: 'bold'
   },
   error_container: {
     backgroundColor: '#f4bec5',
@@ -99,5 +115,14 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     color: "#09439b"
+  },
+  avatar_container: {
+    alignItems: 'center',
+  },
+  avatar: {
+    height: 100,
+    width: 100,
+    textAlign: 'center',
+    borderRadius: 50
   }
 });
